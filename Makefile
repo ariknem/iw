@@ -7,10 +7,11 @@ PKG_CONFIG ?= pkg-config
 
 MKDIR ?= mkdir -p
 INSTALL ?= install
-CC ?= "gcc"
+CC = $(CROSS_COMPILE)gcc
 
 CFLAGS ?= -O2 -g
 CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration
+CFLAGS += -I../libnl/include
 
 OBJS = iw.o genl.o event.o info.o phy.o \
 	interface.o ibss.o station.o survey.o util.o \
@@ -46,7 +47,7 @@ endif
 
 ifeq ($(NL2FOUND),Y)
 CFLAGS += -DCONFIG_LIBNL20
-LIBS += -lnl-genl
+LIBS += -lnl-genl -lm
 NLLIBNAME = libnl-2.0
 endif
 
