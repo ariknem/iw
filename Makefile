@@ -13,6 +13,9 @@ CFLAGS ?= -O2 -g
 CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration
 CFLAGS += -I../libnl/include
 
+LDFLAGS ?= -static-libgcc
+
+
 OBJS = iw.o genl.o event.o info.o phy.o \
 	interface.o ibss.o station.o survey.o util.o \
 	mesh.o mpath.o scan.o reg.o version.o \
@@ -47,7 +50,8 @@ endif
 
 ifeq ($(NL2FOUND),Y)
 CFLAGS += -DCONFIG_LIBNL20
-LIBS += -lnl-genl -lm
+#LIBS += -lnl-genl -lm
+LIBS +=  $(PKG_CONFIG_PATH)/lib/.libs/libnl-genl.a $(PKG_CONFIG_PATH)/lib/.libs/libnl.a -lm
 NLLIBNAME = libnl-2.0
 endif
 
@@ -77,7 +81,7 @@ ifeq ($(NLLIBNAME),)
 $(error Cannot find development files for any supported version of libnl)
 endif
 
-LIBS += $(shell $(PKG_CONFIG) --libs $(NLLIBNAME))
+#LIBS += $(shell $(PKG_CONFIG) --libs $(NLLIBNAME))
 CFLAGS += $(shell $(PKG_CONFIG) --cflags $(NLLIBNAME))
 endif # NO_PKG_CONFIG
 
