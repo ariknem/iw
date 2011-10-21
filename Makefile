@@ -65,7 +65,8 @@ endif
 
 ifeq ($(NL3FOUND),Y)
 CFLAGS += -DCONFIG_LIBNL30
-LIBS += -lnl-genl
+#LIBS += -lnl-genl
+LIBS +=  $(PKG_CONFIG_PATH)/lib/.libs/libnl-genl.a $(PKG_CONFIG_PATH)/lib/.libs/libnl.a -lm
 NLLIBNAME = libnl-3.0
 endif
 
