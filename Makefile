@@ -4,6 +4,7 @@ PREFIX ?= /usr
 SBINDIR ?= $(PREFIX)/sbin
 MANDIR ?= $(PREFIX)/share/man
 PKG_CONFIG ?= pkg-config
+NO_PKG_CONFIG ?= 1
 
 MKDIR ?= mkdir -p
 INSTALL ?= install
@@ -11,9 +12,9 @@ CC = $(CROSS_COMPILE)gcc
 
 CFLAGS ?= -O2 -g
 CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration
-CFLAGS += -I../libnl/include
+CFLAGS += -I$(PKG_CONFIG_PATH)/include
 
-LDFLAGS ?= -static-libgcc
+LDFLAGS ?= -static-libgcc -static
 
 
 OBJS = iw.o genl.o event.o info.o phy.o \
@@ -82,9 +83,13 @@ ifeq ($(NLLIBNAME),)
 $(error Cannot find development files for any supported version of libnl)
 endif
 
-#LIBS += $(shell $(PKG_CONFIG) --libs $(NLLIBNAME))
+LIBS += $(shell $(PKG_CONFIG) --libs $(NLLIBNAME))
 CFLAGS += $(shell $(PKG_CONFIG) --cflags $(NLLIBNAME))
 endif # NO_PKG_CONFIG
+
+CFLAGS += -DCONFIG_LIBNL30
+LIBS +=  $(PKG_CONFIG_PATH)/lib/.libs/libnl-genl.a $(PKG_CONFIG_PATH)/lib/.libs/libnl.a -lm
+NLLIBNAME = libnl-3.0
 
 ifeq ($(V),1)
 Q=
